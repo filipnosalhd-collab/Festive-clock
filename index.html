@@ -2628,6 +2628,10 @@
         const btn = document.getElementById("sndbtn");
         btn.textContent = soundEnabled ? "🔊" : "🔇";
         btn.classList.toggle("muted", !soundEnabled);
+        localStorage.setItem(
+          "fv5",
+          JSON.stringify({ tz, c: hc, snd: soundEnabled })
+        );
         if (soundEnabled) {
           playSound("chime", true);
           const at = pm || cht;
@@ -2728,7 +2732,10 @@
           hc[t] = [...h.c];
         }
         hc[t][i] = c;
-        localStorage.setItem("fv5", JSON.stringify({ tz, c: hc }));
+        localStorage.setItem(
+          "fv5",
+          JSON.stringify({ tz, c: hc, snd: soundEnabled })
+        );
         const h = hs.find((x) => x.t === t);
         if (h && (cht === t || pm === t)) {
           const cols = gc(h);
@@ -2745,6 +2752,12 @@
             const d = JSON.parse(s);
             tz = d.tz || "Europe/Warsaw";
             hc = d.c || {};
+            if (typeof d.snd === "boolean") {
+              soundEnabled = d.snd;
+              const btn = document.getElementById("sndbtn");
+              btn.textContent = soundEnabled ? "🔊" : "🔇";
+              btn.classList.toggle("muted", !soundEnabled);
+            }
             document.querySelector("#tz select").value = tz;
           } catch (e) {
             hc = {};
@@ -2753,7 +2766,10 @@
       }
       function changeTimezone() {
         tz = document.querySelector("#tz select").value;
-        localStorage.setItem("fv5", JSON.stringify({ tz, c: hc }));
+        localStorage.setItem(
+          "fv5",
+          JSON.stringify({ tz, c: hc, snd: soundEnabled })
+        );
       }
 
       load();
